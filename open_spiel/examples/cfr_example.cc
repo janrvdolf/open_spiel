@@ -20,8 +20,10 @@
 #include "open_spiel/algorithms/tabular_exploitability.h"
 #include "open_spiel/spiel.h"
 #include "open_spiel/spiel_utils.h"
+#include "open_spiel/game_transforms/turn_based_simultaneous_game.h"
+#include "open_spiel/game_transforms//efg_writer.h"
 
-ABSL_FLAG(std::string, game_name, "kuhn_poker", "Game to run CFR on.");
+ABSL_FLAG(std::string, game_name, "matrix_rps", "Game to run CFR on.");
 ABSL_FLAG(int, num_iters, 1000, "How many iters to run for.");
 ABSL_FLAG(int, report_every, 100, "How often to report exploitability.");
 
@@ -29,10 +31,13 @@ ABSL_FLAG(int, report_every, 100, "How often to report exploitability.");
 int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
   std::shared_ptr<const open_spiel::Game> game =
-      open_spiel::LoadGame(absl::GetFlag(FLAGS_game_name));
+      open_spiel::LoadGameAsTurnBased(absl::GetFlag(FLAGS_game_name));
   open_spiel::algorithms::CFRSolver solver(*game);
   std::cerr << "Starting CFR and CFR+ on " << game->GetType().short_name
             << "..." << std::endl;
+
+  open_spiel::EFGWriter efg_writer = open_spiel::EFGWriter(*game, "matrix_rps.efg");
+  efg_writer.Write();
 
   for (int i = 0; i < absl::GetFlag(FLAGS_num_iters); ++i) {
     solver.EvaluateAndUpdatePolicy();
