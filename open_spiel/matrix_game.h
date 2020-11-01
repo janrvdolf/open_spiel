@@ -124,6 +124,10 @@ class MatrixGame : public NormalFormGame {
     return PlayerUtility(player, joint_action[0], joint_action[1]);
   }
 
+  double UtilitySum() const override {
+      return 0.0;
+  }
+
   bool operator==(const Game& other_game) const override {
     const auto& other = down_cast<const MatrixGame&>(other_game);
     return (row_action_names_.size() == other.row_action_names_.size() &&
