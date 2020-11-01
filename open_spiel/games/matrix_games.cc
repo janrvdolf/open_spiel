@@ -244,4 +244,31 @@ std::shared_ptr<const Game> Factory(const GameParameters& params) {
 REGISTER_SPIEL_GAME(kGameType, Factory);
 }  // namespace chicken_dare
 
+// Small-matrix game.
+// As described in https://arxiv.org/abs/2007.14358, page 21
+    namespace small_matrix_game {
+        const GameType kGameType{
+                /*short_name=*/"matrix_smg",
+                /*long_name=*/"Small-Matrix-Game",
+                               GameType::Dynamics::kSimultaneous,
+                               GameType::ChanceMode::kDeterministic,
+                               GameType::Information::kOneShot,
+                               GameType::Utility::kZeroSum,
+                               GameType::RewardModel::kTerminal,
+                /*max_num_players=*/2,
+                /*min_num_players=*/2,
+                /*provides_information_state_string=*/true,
+                /*provides_information_state_tensor=*/true,
+                /*parameter_specification=*/{}  // no parameters
+        };
+
+        std::shared_ptr<const Game> Factory(const GameParameters& params) {
+            return std::shared_ptr<const Game>(
+                    new MatrixGame(kGameType, params, {"Action 1", "Action 2"},
+                                   {"Action 1", "Action 2"}, {5, -1, 0, 1}, {-5, 1, 0, -1}));
+        }
+
+        REGISTER_SPIEL_GAME(kGameType, Factory);
+    }  // namespace chicken_dare
+
 }  // namespace open_spiel
