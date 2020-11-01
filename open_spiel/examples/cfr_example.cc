@@ -25,7 +25,7 @@
 
 ABSL_FLAG(std::string, game_name, "matrix_smg", "Game to run CFR on.");
 ABSL_FLAG(int, num_iters, 2000, "How many iters to run for.");
-ABSL_FLAG(int, report_every, 1, "How often to report exploitability.");
+ABSL_FLAG(int, report_every, 10, "How often to report exploitability.");
 
 // Example code for using CFR+ to solve Kuhn Poker.
 int main(int argc, char** argv) {
@@ -45,8 +45,9 @@ int main(int argc, char** argv) {
         i == absl::GetFlag(FLAGS_num_iters) - 1) {
       double exploitability = open_spiel::algorithms::Exploitability(
           *game, *solver.AveragePolicy());
-      std::cerr << "Iteration " << i << " exploitability=" << exploitability
-                << std::endl;
+//      std::cerr << "Iteration " << i << " exploitability=" << exploitability
+//                << std::endl;
+        std::cout << exploitability << std::endl;
     }
   }
 }
