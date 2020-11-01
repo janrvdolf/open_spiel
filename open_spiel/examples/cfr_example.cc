@@ -23,20 +23,20 @@
 #include "open_spiel/game_transforms/turn_based_simultaneous_game.h"
 #include "open_spiel/game_transforms//efg_writer.h"
 
-ABSL_FLAG(std::string, game_name, "matrix_rps", "Game to run CFR on.");
-ABSL_FLAG(int, num_iters, 1000, "How many iters to run for.");
-ABSL_FLAG(int, report_every, 100, "How often to report exploitability.");
+ABSL_FLAG(std::string, game_name, "matrix_smg", "Game to run CFR on.");
+ABSL_FLAG(int, num_iters, 2000, "How many iters to run for.");
+ABSL_FLAG(int, report_every, 1, "How often to report exploitability.");
 
 // Example code for using CFR+ to solve Kuhn Poker.
 int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
   std::shared_ptr<const open_spiel::Game> game =
       open_spiel::LoadGameAsTurnBased(absl::GetFlag(FLAGS_game_name));
-  open_spiel::algorithms::CFRSolver solver(*game);
+  open_spiel::algorithms::CFRPlusSolver solver(*game);
   std::cerr << "Starting CFR and CFR+ on " << game->GetType().short_name
             << "..." << std::endl;
 
-  open_spiel::EFGWriter efg_writer = open_spiel::EFGWriter(*game, "matrix_rps.efg");
+  open_spiel::EFGWriter efg_writer = open_spiel::EFGWriter(*game, "matrix_smg.efg");
   efg_writer.Write();
 
   for (int i = 0; i < absl::GetFlag(FLAGS_num_iters); ++i) {
