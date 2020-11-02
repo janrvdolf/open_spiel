@@ -173,7 +173,8 @@ TabularPolicy CFRCurrentPolicy::AsTabular() const {
 }
 
 CFRSolverBase::CFRSolverBase(const Game& game, bool alternating_updates,
-                             bool linear_averaging, bool regret_matching_plus,
+                             bool linear_averaging, bool quadratic_averaging,
+                             bool regret_matching_plus,
                              bool random_initial_regrets, int seed)
     : game_(game.shared_from_this()),
       root_state_(game.NewInitialState()),
@@ -181,6 +182,7 @@ CFRSolverBase::CFRSolverBase(const Game& game, bool alternating_updates,
       regret_matching_plus_(regret_matching_plus),
       alternating_updates_(alternating_updates),
       linear_averaging_(linear_averaging),
+      quadratic_averaging_(quadratic_averaging),
       random_initial_regrets_(random_initial_regrets),
       chance_player_(game.NumPlayers()),
       rng_(seed) {
@@ -194,7 +196,7 @@ CFRSolverBase::CFRSolverBase(const Game& game, bool alternating_updates,
 }
 
 CFRSolverBase::CFRSolverBase(std::shared_ptr<const Game> game,
-                             bool alternating_updates, bool linear_averaging,
+                             bool alternating_updates, bool linear_averaging, bool quadratic_averaging,
                              bool regret_matching_plus, int iteration,
                              bool random_initial_regrets, int seed)
     : game_(game),
@@ -204,6 +206,7 @@ CFRSolverBase::CFRSolverBase(std::shared_ptr<const Game> game,
       regret_matching_plus_(regret_matching_plus),
       alternating_updates_(alternating_updates),
       linear_averaging_(linear_averaging),
+      quadratic_averaging_(quadratic_averaging),
       random_initial_regrets_(random_initial_regrets),
       chance_player_(game->NumPlayers()),
       rng_(seed) {
@@ -380,9 +383,12 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegret(
 
       // Update average policy.
       if (linear_averaging_) {
-        is_vals.cumulative_policy[aidx] +=
-            iteration_ * self_reach_prob * info_state_policy[aidx];
-      } else {  //TODO add quadratic averaging
+          is_vals.cumulative_policy[aidx] +=
+                  iteration_ * self_reach_prob * info_state_policy[aidx];
+      } else if (quadratic_averaging_) {
+          is_vals.cumulative_policy[aidx] +=
+                  iteration_ * iteration_ * self_reach_prob * info_state_policy[aidx];
+      } else {
         is_vals.cumulative_policy[aidx] +=
             self_reach_prob * info_state_policy[aidx];
       }

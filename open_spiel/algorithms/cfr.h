@@ -179,11 +179,13 @@ class CFRCurrentPolicy : public Policy {
 class CFRSolverBase {
  public:
   CFRSolverBase(const Game& game, bool alternating_updates,
-                bool linear_averaging, bool regret_matching_plus,
+                bool linear_averaging, bool quadratic_averaging,
+                bool regret_matching_plus,
                 bool random_initial_regrets = false, int seed = 0);
   // The constructor below is used for deserialization purposes.
   CFRSolverBase(std::shared_ptr<const Game> game, bool alternating_updates,
-                bool linear_averaging, bool regret_matching_plus, int iteration,
+                bool linear_averaging, bool quadratic_averaging,
+                bool regret_matching_plus, int iteration,
                 bool random_initial_regrets = false, int seed = 0);
   virtual ~CFRSolverBase() = default;
 
@@ -277,6 +279,7 @@ class CFRSolverBase {
   const bool regret_matching_plus_;
   const bool alternating_updates_;
   const bool linear_averaging_;
+  const bool quadratic_averaging_;
   const bool random_initial_regrets_;
 
   const int chance_player_;
@@ -296,12 +299,14 @@ class CFRSolver : public CFRSolverBase {
       : CFRSolverBase(game,
                       /*alternating_updates=*/true,
                       /*linear_averaging=*/false,
+                      /*quadratic_averaging=*/false,
                       /*regret_matching_plus=*/false) {}
   // The constructor below is used for deserialization purposes.
   CFRSolver(std::shared_ptr<const Game> game, int iteration)
       : CFRSolverBase(game,
                       /*alternating_updates=*/true,
                       /*linear_averaging=*/false,
+                      /*quadratic_averaging=*/false,
                       /*regret_matching_plus=*/false, iteration) {}
 
  protected:
@@ -325,12 +330,14 @@ class CFRPlusSolver : public CFRSolverBase {
       : CFRSolverBase(game,
                       /*alternating_updates=*/true,
                       /*linear_averaging=*/true,
+                      /*quadratic_averaging=*/false,
                       /*regret_matching_plus=*/true) {}
   // The constructor below is used for deserialization purposes.
   CFRPlusSolver(std::shared_ptr<const Game> game, int iteration)
       : CFRSolverBase(game,
                       /*alternating_updates=*/true,
                       /*linear_averaging=*/false,
+                      /*quadratic_averaging=*/false,
                       /*regret_matching_plus=*/false, iteration) {}
 
  protected:

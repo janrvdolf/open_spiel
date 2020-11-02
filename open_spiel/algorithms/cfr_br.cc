@@ -24,6 +24,7 @@ CFRBRSolver::CFRBRSolver(const Game& game)
     : CFRSolverBase(game,
                     /*alternating_updates=*/false,
                     /*linear_averaging=*/false,
+                    /*quadratic_averaging=*/false,
                     /*regret_matching_plus=*/false),
       policy_overrides_(game.NumPlayers(), nullptr),
       uniform_policy_(UniformPolicy()) {
@@ -34,6 +35,7 @@ CFRBRSolver::CFRBRSolver(std::shared_ptr<const Game> game, int iteration)
     : CFRSolverBase(game,
                     /*alternating_updates=*/false,
                     /*linear_averaging=*/false,
+                    /*quadratic_averaging=*/false,
                     /*regret_matching_plus=*/false, iteration),
       policy_overrides_(game->NumPlayers(), nullptr),
       uniform_policy_(UniformPolicy()) {
