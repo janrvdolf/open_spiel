@@ -32,7 +32,15 @@ int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
   std::shared_ptr<const open_spiel::Game> game =
       open_spiel::LoadGameAsTurnBased(absl::GetFlag(FLAGS_game_name));
-  open_spiel::algorithms::CFRPlusSolver solver(*game);
+
+//  open_spiel::algorithms::CFRPlusSolver solver(*game);
+
+    open_spiel::algorithms::CFRSolverBase solver = open_spiel::algorithms::CFRSolverBase(*game,
+            /*alternating_updates=*/true,
+            /*linear_averaging=*/false,
+            /*quadratic_averaging=*/true,
+            /*regret_matching_plus=*/true);
+
   std::cerr << "Starting CFR and CFR+ on " << game->GetType().short_name
             << "..." << std::endl;
 
