@@ -376,10 +376,13 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegret(
 
     for (int aidx = 0; aidx < legal_actions.size(); ++aidx) {
       // Update regrets.
+
+      is_vals.pcfr_values[aidx] += child_utilities[aidx];  //TODO ale neni to akumulativni po updatu strategie vyresetovat
+
       double cfr_regret = cfr_reach_prob *
                           (child_utilities[aidx] - state_value[current_player]);
 
-      is_vals.cumulative_regrets[aidx] += cfr_regret; // TODO store counterfactual values
+      is_vals.pcfr_values[aidx] += cfr_regret; // TODO store counterfactual values for pcfr
 
       // Update average policy.
       if (linear_averaging_) {
@@ -440,7 +443,7 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegretForActionProbs(
     const std::vector<Action>& legal_actions,
     std::vector<double>* child_values_out,
     const std::vector<const Policy*>* policy_overrides) {
-  std::vector<double> state_value(game_->NumPlayers());
+    std::vector<double> state_value(game_->NumPlayers());
 
   for (int aidx = 0; aidx < legal_actions.size(); ++aidx) {
     const Action action = legal_actions[aidx];
@@ -604,6 +607,8 @@ void CFRInfoStateValues::ApplyRegretMatching() {
     } else {
       current_policy[aidx] = 1.0 / legal_actions.size();
     }
+
+    pcfr_values[aidx] = 0.0; // TODO prefaktorovat?
   }
 }
 

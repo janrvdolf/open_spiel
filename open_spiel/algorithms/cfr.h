@@ -45,6 +45,7 @@ struct CFRInfoStateValues {
       : legal_actions(la),
         cumulative_regrets(la.size(), init_value),
         cumulative_policy(la.size(), init_value),
+        pcfr_values(la.size(), 0.0),
         current_policy(la.size(), 1.0 / la.size()) {}
   CFRInfoStateValues(std::vector<Action> la) : CFRInfoStateValues(la, 0) {}
 
@@ -95,6 +96,7 @@ struct CFRInfoStateValues {
   std::vector<double> cumulative_regrets;
   std::vector<double> cumulative_policy;
   std::vector<double> current_policy;
+  std::vector<double> pcfr_values; // TODO prejmenovat
 };
 
 CFRInfoStateValues DeserializeCFRInfoStateValues(absl::string_view serialized);
