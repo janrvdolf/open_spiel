@@ -316,9 +316,11 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegret(
     const State& state, const absl::optional<int>& alternating_player,
     const std::vector<double>& reach_probabilities,
     const std::vector<const Policy*>* policy_overrides) {
+
   if (state.IsTerminal()) {
     return state.Returns();
   }
+
   if (state.IsChanceNode()) {
     ActionsAndProbs actions_and_probs = state.ChanceOutcomes();
     std::vector<double> dist(actions_and_probs.size(), 0);
@@ -331,6 +333,7 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegret(
         state, alternating_player, reach_probabilities, chance_player_, dist,
         outcomes, nullptr, policy_overrides);
   }
+
   if (AllPlayersHaveZeroReachProb(reach_probabilities)) {
     // The value returned is not used: if the reach probability for all players
     // is 0, then the last taken action has probability 0, so the
@@ -373,13 +376,13 @@ std::vector<double> CFRSolverBase::ComputeCounterFactualRegret(
       double cfr_regret = cfr_reach_prob *
                           (child_utilities[aidx] - state_value[current_player]);
 
-      is_vals.cumulative_regrets[aidx] += cfr_regret;
+      is_vals.cumulative_regrets[aidx] += cfr_regret; // TODO store counterfactual values
 
       // Update average policy.
       if (linear_averaging_) {
         is_vals.cumulative_policy[aidx] +=
             iteration_ * self_reach_prob * info_state_policy[aidx];
-      } else {
+      } else {  //TODO add quadratic averaging
         is_vals.cumulative_policy[aidx] +=
             self_reach_prob * info_state_policy[aidx];
       }
